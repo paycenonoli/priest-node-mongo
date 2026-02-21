@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <title>User Profile App</title>
+  </head>
+  <body>
+    <h1>Create User</h1>
+
+    <form action="/users" method="POST">
+      <input type="text" name="name" placeholder="Enter name" required />
+      <input type="email" name="email" placeholder="Enter email" required />
+      <button type="submit">Submit</button>
+    </form>
+
+    <hr />
+
+    <h2>All Users</h2>
+    <button onclick="loadUsers()">UI Update</button>
+
+    <ul id="userList"></ul>
+
+    <script>
+      async function loadUsers() {
+        const res = await fetch("/users");
+        const users = await res.json();
+
+        const list = document.getElementById("userList");
+        list.innerHTML = "";
+
+        users.forEach((user) => {
+          const li = document.createElement("li");
+          li.textContent = user.name + " - " + user.email;
+          list.appendChild(li);
+        });
+      }
+    </script>
+  </body>
+</html>

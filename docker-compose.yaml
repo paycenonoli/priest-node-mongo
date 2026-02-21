@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+    volumes:
+      - mongo-data:/data/db
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASS}
+      ME_CONFIG_MONGODB_SERVER: mongo
+      // ME_CONFIG_BASICAUTH_USERNAME: ${EXPRESS_USER}
+      // ME_CONFIG_BASICAUTH_PASSWORD: ${EXPRESS_PASS}
+    depends_on:
+      - mongo
+
+  app:
+    image: ojpascale/priest-node-mongo:v1
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASS: ${MONGO_PASS}
+      MONGO_DB: ${MONGO_DB}
+      MONGO_HOST: mongo
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
